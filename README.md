@@ -4,7 +4,6 @@ Ansible role that installs docker and docker-compose on Debian/Ubuntu hosts.
 
 ## Variables
  
-    docker_users                default: none
     docker_compose_version      default: 1.6.2
 
 ## Example Playbook
