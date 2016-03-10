@@ -65,7 +65,12 @@
     name: docker
     state: started
 
-- name: install docker-compose
+- name: query docker-compose binary path
+  shell: which docker-compose
+  register: docker_compose_path
+
+- name: install docker-compose if not present
+  when: docker_compose_path.rc == 1
   shell: >
     curl -LsS https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-Linux-x86_64 > /tmp/docker-compose
     && mv /tmp/docker-compose /usr/local/bin/docker-compose
