@@ -37,6 +37,7 @@
 
 - name: install linux-image-extra matching kernel release
   apt: name=linux-image-extra-{{ kernel_release.stdout }} state=present
+  when: debian_distro.stdout == "ubuntu"
 
 - name: install docker-engine
   apt: name=docker-engine state=present update_cache=yes
