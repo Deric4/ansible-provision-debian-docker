@@ -47,14 +47,6 @@
     state: present
     system: yes
 
-- name: docker group users
-  user:
-    append: yes
-    groups: docker
-    state: present
-    name: '{{ item }}'
-  with_items: docker_users or []
-
 - name: enable docker service
   service:
     name: docker
