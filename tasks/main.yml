@@ -1,0 +1,73 @@
+---
+
+- name: query linux kernel release
+  shell: uname -r | xargs
+  register: kernel_release 
+
+- name: query debian distro
+  shell: lsb_release -i | cut -d':' -f 2 | awk '{print tolower($0)}' | xargs
+  register: debian_distro
+
+- name: query debian release
+  shell: lsb_release -c | cut -d':' -f 2 | awk '{print tolower($0)}' | xargs
+  register: debian_release
+
+- name: update apt cache
+  apt: name=coreutils state=present update_cache=yes
+
+- name: install apt-transport-https 
+  apt: name=apt-transport-https state=present
+
+- name: install ca-certificates
+  apt: name=ca-certificates state=present
+
+- name: install docker gpg key
+  shell: apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+- name: register apt sources (ubuntu)
+  shell: echo "deb https://apt.dockerproject.org/repo ubuntu-{{ debian_release.stdout }} main" > /etc/apt/sources.list.d/docker.list
+  when: debian_distro.stdout == "ubuntu"
+
+- name: register apt sources (debian)
+  shell: echo "deb deb https://apt.dockerproject.org/repo debian-{{ debian_release.stdout }} main" > /etc/apt/sources.list.d/docker.list
+  when: debian_distro.stdout == "debian"
+
+- name: purge lxc-docker
+  apt: name=lxc-docker state=absent purge=yes
+
+- name: install linux-image-extra matching kernel release
+  apt: name=linux-image-extra-{{ kernel_release.stdout }} state=present
+
+- name: install docker-engine
+  apt: name=docker-engine state=present update_cache=yes
+
+- name: docker group
+  group:
+    name: docker
+    state: present
+    system: yes
+
+- name: docker group users
+  user:
+    append: yes
+    groups: docker
+    state: present
+    name: '{{ item }}'
+  with_items: docker_users or []
+
+- name: enable docker service
+  service:
+    name: docker
+    enabled: yes
+
+- name: start docker
+  service:
+    name: docker
+    state: started
+
+- name: install docker-compose
+  shell: >
+    curl -LsS https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-Linux-x86_64 > /tmp/docker-compose
+    && mv /tmp/docker-compose /usr/local/bin/docker-compose
+    && chmod +x /usr/local/bin/docker-compose
+
