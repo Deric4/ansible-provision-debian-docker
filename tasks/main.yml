@@ -35,7 +35,7 @@
 - name: purge lxc-docker
   apt: name=lxc-docker state=absent purge=yes
 
-- name: install linux-image-extra matching kernel release
+- name: install linux-image-extra
   apt: name=linux-image-extra-{{ kernel_release.stdout }} state=present
 
 - name: install docker-engine
