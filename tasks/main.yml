@@ -61,6 +61,7 @@
 - name: query docker-compose binary path
   shell: which docker-compose
   register: docker_compose_path
+  ignore_errors: True
 
 - name: install docker-compose if not present
   when: docker_compose_path.rc == 1
