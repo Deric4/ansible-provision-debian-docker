@@ -74,6 +74,7 @@
 - name: install docker-compose
   when: docker_compose_binary.stdout == ""
   shell: >
-    curl -LsS https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ kernel_arch.stdout}} > {{ docker_compose_prefix }}/docker-compose
+    curl -LsS https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ kernel_arch.stdout}} > /tmp/docker-compose
+    && mv /tmp/docker-compose {{ docker_compose_prefix }}/docker-compose
     && chmod 755 {{ docker_compose_prefix}}/docker-compose
 
