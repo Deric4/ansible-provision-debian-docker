@@ -18,7 +18,15 @@
 
 - name: query docker-compose binary
   shell: echo $(which docker-compose) || echo ""
-  register: docker_compose_path
+  register: docker_compose_binary
+
+- name: query curl binary
+  shell: echo $(which curl) || echo ""
+  register: curl_binary
+
+- name: install curl
+  when: curl_binary.stdout == ""
+  apt: name=curl state=present update_cache=yes cache_valid_time=3600
 
 - name: install apt-transport-https 
   apt: name=apt-transport-https state=present update_cache=yes cache_valid_time=3600
@@ -64,10 +72,8 @@
     state: started
 
 - name: install docker-compose
-  when: docker_compose_path.stdout == ""
-  get_url:
-    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-{{ kernel_arch.stdout }}
-    timeout: "{{ get_url_timeout }}"
-    dest: "{{ docker_compose_prefix}}/docker-compose"
-    mode: 0755
+  when: docker_compose_binary.stdout == ""
+  shell: >
+    curl -LsS https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ kernel_arch.stdout}} > {{ docker_compose_prefix }}/docker-compose
+    && chmod 755 {{ docker_compose_prefix}}/docker-compose
 
