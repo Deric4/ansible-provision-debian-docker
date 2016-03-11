@@ -1,5 +1,9 @@
 ---
 
+- name: query linux kernel architecture
+  shell: echo "$(uname -s)-$(uname -p)"
+  register: kernel_arch
+
 - name: query linux kernel release
   shell: uname -r | xargs
   register: kernel_release 
@@ -65,8 +69,8 @@
 
 - name: install docker-compose if not present
   when: docker_compose_path.rc == 1
-  shell: >
-    curl -LsS https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-Linux-x86_64 > /tmp/docker-compose
-    && mv /tmp/docker-compose /usr/local/bin/docker-compose
-    && chmod +x /usr/local/bin/docker-compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-{{ kernel_arch.stdout }}"
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
 
