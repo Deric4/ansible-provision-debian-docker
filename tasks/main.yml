@@ -60,12 +60,11 @@
     state: started
 
 - name: query docker-compose binary path
-  shell: which docker-compose
+  shell: echo $(which docker-compose) || echo ""
   register: docker_compose_path
-  ignore_errors: True
 
 - name: install docker-compose
-  when: docker_compose_path.rc == 1
+  when: docker_compose_path.stdout == ""
   get_url:
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-{{ kernel_arch.stdout }}
     timeout: "{{ get_url_timeout }}"
