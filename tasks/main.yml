@@ -16,6 +16,10 @@
   shell: lsb_release -c | cut -d':' -f 2 | awk '{print tolower($0)}' | xargs
   register: debian_release
 
+- name: query docker-compose binary
+  shell: echo $(which docker-compose) || echo ""
+  register: docker_compose_path
+
 - name: install apt-transport-https 
   apt: name=apt-transport-https state=present update_cache=yes cache_valid_time=3600
 
@@ -58,10 +62,6 @@
   service:
     name: docker
     state: started
-
-- name: query docker-compose binary
-  shell: echo $(which docker-compose) || echo ""
-  register: docker_compose_path
 
 - name: install docker-compose
   when: docker_compose_path.stdout == ""
