@@ -59,7 +59,7 @@
     name: docker
     state: started
 
-- name: query docker-compose binary path
+- name: query docker-compose binary
   shell: echo $(which docker-compose) || echo ""
   register: docker_compose_path
 
