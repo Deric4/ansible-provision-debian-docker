@@ -68,6 +68,6 @@
   get_url:
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version}}/docker-compose-{{ kernel_arch.stdout }}
     timeout: "{{ get_url_timeout }}"
-    dest: /usr/local/bin/docker-compose
+    dest: {{ docker_compose_prefix}}/docker-compose
     mode: 0755
 
