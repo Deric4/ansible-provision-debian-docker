@@ -7,6 +7,7 @@ Ansible role that installs docker and docker-compose on Debian/Ubuntu hosts.
     docker_compose_version      1.6.2
     docker_gpg_server           hkp://p80.pool.sks-keyservers.net:80
     docker_gpg_key              58118E89F3A912897C070ADBF76221572C52609D
+    get_url_timeout             60
 
 ## Example Playbook
 
