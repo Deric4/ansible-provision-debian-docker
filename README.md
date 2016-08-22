@@ -4,7 +4,7 @@ Ansible role that installs docker and docker-compose on Debian/Ubuntu hosts.
 
 ## Role Defaults
 
-    docker_compose_version      1.7.0
+    docker_compose_version      1.8.0
     docker_compose_prefix       /usr/local/bin
     docker_gpg_server           hkp://p80.pool.sks-keyservers.net:80
     docker_gpg_key              58118E89F3A912897C070ADBF76221572C52609D
